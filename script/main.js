@@ -15,4 +15,10 @@ function loadFile(fileInputEvent)
   }
 }
 
+function handleKeyPress()
+{
+  console.log('Key press');
+}
+
 document.getElementById('file-input').addEventListener('change', loadFile, false);
+document.addEventListener('keypress', handleKeyPress, false);
