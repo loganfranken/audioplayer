@@ -1,3 +1,10 @@
+var KeyCode = {
+  Space: 32
+};
+
+var fileInput = document.getElementById('file-input');
+var audioPlayer = document.getElementById('audio-player');
+
 function loadFile(fileInputEvent)
 {
   var file = fileInputEvent.target.files[0];
@@ -8,17 +15,29 @@ function loadFile(fileInputEvent)
 
     reader.onload = function(fileLoadEvent) {
         var dataUrl = fileLoadEvent.currentTarget.result;
-        document.getElementById('audio-player').setAttribute('src', dataUrl);
+        audioPlayer.setAttribute('src', dataUrl);
+        
+        audioPlayer.focus();
     }
 
     reader.readAsDataURL(file);
   }
 }
 
-function handleKeyPress()
+function handleKeyPress(keyPressEvent)
 {
-  console.log('Key press');
+  if(keyPressEvent.keyCode === KeyCode.Space)
+  {
+    if(audioPlayer.paused)
+    {
+      audioPlayer.play();
+    }
+    else
+    {
+      audioPlayer.pause();
+    }
+  }
 }
 
-document.getElementById('file-input').addEventListener('change', loadFile, false);
+fileInput.addEventListener('change', loadFile, false);
 document.addEventListener('keypress', handleKeyPress, false);
