@@ -1,5 +1,7 @@
 var KeyCode = {
-  Space: 32
+  Space: 32,
+  LeftArrow: 37,
+  RightArrow: 39
 };
 
 var fileInput = document.getElementById('file-input');
@@ -16,7 +18,7 @@ function loadFile(fileInputEvent)
     reader.onload = function(fileLoadEvent) {
         var dataUrl = fileLoadEvent.currentTarget.result;
         audioPlayer.setAttribute('src', dataUrl);
-        
+
         audioPlayer.focus();
     }
 
@@ -24,9 +26,10 @@ function loadFile(fileInputEvent)
   }
 }
 
-function handleKeyPress(keyPressEvent)
+function handleKeyDown(keyDownEvent)
 {
-  if(keyPressEvent.keyCode === KeyCode.Space)
+  // Handle: Toggle Pause/Play
+  if(keyDownEvent.keyCode === KeyCode.Space)
   {
     if(audioPlayer.paused)
     {
@@ -37,7 +40,19 @@ function handleKeyPress(keyPressEvent)
       audioPlayer.pause();
     }
   }
+
+  // Handle: Rewind
+  if(keyDownEvent.keyCode === KeyCode.LeftArrow)
+  {
+    audioPlayer.currentTime--;
+  }
+
+  // Handle: Fast-Forward
+  if(keyDownEvent.keyCode === KeyCode.RightArrow)
+  {
+    audioPlayer.currentTime++;
+  }
 }
 
 fileInput.addEventListener('change', loadFile, false);
-document.addEventListener('keypress', handleKeyPress, false);
+document.addEventListener('keydown', handleKeyDown, false);
