@@ -1,3 +1,9 @@
+(function() {
+
+  
+
+})();
+
 var KeyCode = {
   Space: 32,
   LeftArrow: 37,
