@@ -1,17 +1,29 @@
 (function() {
 
-  
+  var KeyCode = {
+    Space: 32,
+    LeftArrow: 37,
+    RightArrow: 39
+  };
+
+  var players = document.getElementsByClassName('audio-player');
+  var playerCount = players.length;
+
+  for(var i=0; i<playerCount; i++)
+  {
+    initPlayer(players[i]);
+  }
+
+  function initPlayer(player)
+  {
+    // File Input
+    var fileInput = document.createElement('input');
+    fileInput.setAttribute('type', 'file');
+
+    player.appendChild(fileInput);
+  }
 
 })();
-
-var KeyCode = {
-  Space: 32,
-  LeftArrow: 37,
-  RightArrow: 39
-};
-
-var fileInput = document.getElementById('file-input');
-var audioPlayer = document.getElementById('audio-player');
 
 function loadFile(fileInputEvent)
 {
