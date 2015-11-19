@@ -6,47 +6,48 @@
     RightArrow: 39
   };
 
-  document.addEventListener('keydown', handleKeyDown, false);
-
-  var players = document.getElementsByClassName('audio-player');
-  var playerCount = players.length;
-
-  for(var i=0; i<playerCount; i++)
-  {
-    initPlayer(players[i]);
+  function AudioPlayer(playerElem) {
+    this.playerElem = playerElem;
+    this.fileInputElem = null;
+    this.audioElem = null;
   }
 
-  function initPlayer(player)
-  {
+  AudioPlayer.prototype.init = function() {
+
     // File Input
-    var fileInput = document.createElement('input');
-    fileInput.setAttribute('type', 'file');
-    fileInput.addEventListener('change', loadFile, false);
-    player.appendChild(fileInput);
+    this.fileInputElem = document.createElement('input');
+    this.fileInputElem.setAttribute('type', 'file');
+    this.fileInputElem.addEventListener('change', this.onLoadFile, false);
+    this.playerElem.appendChild(this.fileInputElem);
 
     // Audio Player
-    var audioPlayer = document.createElement('audio');
-    audioPlayer.setAttribute('controls', '');
-    player.appendChild(audioPlayer);
+    this.audioElem = document.createElement('audio');
+    this.audioElem.setAttribute('controls', '');
+    this.playerElem.appendChild(this.audioElem);
+
   }
 
-  function loadFile(fileInputEvent)
-  {
+  AudioPlayer.prototype.onLoadFile = function(fileInputEvent) {
+
+    var playerElem = this.playerElem;
+    var audioElem = this.audioElem;
+
     var file = fileInputEvent.target.files[0];
 
     if(file)
     {
       var reader = new FileReader();
 
-      reader.onload = function(fileLoadEvent) {
+      reader.onload = function(fileLoadEvent)
+      {
           var dataUrl = fileLoadEvent.currentTarget.result;
-          audioPlayer.setAttribute('src', dataUrl);
-
-          audioPlayer.focus();
+          playerElem.setAttribute('src', dataUrl);
+          playerElem.focus();
       }
 
       reader.readAsDataURL(file);
     }
+
   }
 
   function handleKeyDown(keyDownEvent)
@@ -75,6 +76,17 @@
     {
       audioPlayer.currentTime++;
     }
+  }
+
+  document.addEventListener('keydown', handleKeyDown, false);
+
+  var players = document.getElementsByClassName('audio-player');
+  var playerCount = players.length;
+
+  for(var i=0; i<playerCount; i++)
+  {
+    var player = new AudioPlayer(players[i]);
+    player.init();
   }
 
 })();
