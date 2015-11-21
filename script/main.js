@@ -14,10 +14,12 @@
 
   AudioPlayer.prototype.init = function() {
 
+    var self = this;
+
     // File Input
     this.fileInputElem = document.createElement('input');
     this.fileInputElem.setAttribute('type', 'file');
-    this.fileInputElem.addEventListener('change', this.onLoadFile, false);
+    this.fileInputElem.addEventListener('change', function() { self.onLoadFile.apply(self, arguments); }, false);
     this.playerElem.appendChild(this.fileInputElem);
 
     // Audio Player
@@ -29,7 +31,6 @@
 
   AudioPlayer.prototype.onLoadFile = function(fileInputEvent) {
 
-    var playerElem = this.playerElem;
     var audioElem = this.audioElem;
 
     var file = fileInputEvent.target.files[0];
@@ -41,8 +42,8 @@
       reader.onload = function(fileLoadEvent)
       {
           var dataUrl = fileLoadEvent.currentTarget.result;
-          playerElem.setAttribute('src', dataUrl);
-          playerElem.focus();
+          audioElem.setAttribute('src', dataUrl);
+          audioElem.focus();
       }
 
       reader.readAsDataURL(file);
