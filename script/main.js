@@ -27,6 +27,9 @@
     this.audioElem.setAttribute('controls', '');
     this.playerElem.appendChild(this.audioElem);
 
+    // Keyboard Controls
+    document.addEventListener('keydown', function() { self.onKeyDown.apply(self, arguments); }, false);
+
   }
 
   AudioPlayer.prototype.onLoadFile = function(fileInputEvent) {
@@ -51,36 +54,36 @@
 
   }
 
-  function handleKeyDown(keyDownEvent)
-  {
+  AudioPlayer.prototype.onKeyDown = function(keyDownEvent) {
+
     // Handle: Toggle Pause/Play
     if(keyDownEvent.keyCode === KeyCode.Space)
     {
-      if(audioPlayer.paused)
+      if(this.audioElem.paused)
       {
-        audioPlayer.play();
+        this.audioElem.play();
       }
       else
       {
-        audioPlayer.pause();
+        this.audioElem.pause();
       }
     }
 
     // Handle: Rewind
     if(keyDownEvent.keyCode === KeyCode.LeftArrow)
     {
-      audioPlayer.currentTime--;
+      this.audioElem.currentTime--;
     }
 
     // Handle: Fast-Forward
     if(keyDownEvent.keyCode === KeyCode.RightArrow)
     {
-      audioPlayer.currentTime++;
+      this.audioElem.currentTime++;
     }
+
   }
 
-  document.addEventListener('keydown', handleKeyDown, false);
-
+  // Initialize the audio players
   var players = document.getElementsByClassName('audio-player');
   var playerCount = players.length;
 
