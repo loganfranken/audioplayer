@@ -47,6 +47,7 @@
           var dataUrl = fileLoadEvent.currentTarget.result;
           audioElem.setAttribute('src', dataUrl);
           audioElem.focus();
+          audioElem.play();
       }
 
       reader.readAsDataURL(file);
