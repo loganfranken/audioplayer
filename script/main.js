@@ -1,6 +1,6 @@
 (function() {
 
-  var defaultStatusMessage = 'Drop a file here or choose one';
+  var defaultStatusMessage = 'Drop a File or Choose One';
 
   var KeyCode = {
     Space: 32,

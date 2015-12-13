@@ -7,7 +7,37 @@ html, body
 
 .audio-player
 {
-  background: red;
+  align-items: center;
+  background: #EEE;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
   height: 100%;
+  justify-content: center;
   width: 100%;
+}
+
+.audio-player audio
+{
+  display: none;
+}
+
+.audio-player div
+{
+  font-size: 1.5em;
+  margin-bottom: 1em;
+  text-align: center;
+  width: 13em;
+}
+
+.audio-player div::before
+{
+  background: #CCC;
+  content: '';
+  display: block;
+  height: 8em;
+  -webkit-mask: url('../images/file-music.svg') no-repeat top center;
+  mask: url('../images/file-music.svg') no-repeat top center;
+  -webkit-mask-size: 50% auto;
+  mask-size: 100% auto;
 }
