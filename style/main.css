@@ -17,9 +17,9 @@ html, body
   width: 100%;
 }
 
-.audio-player audio
+.audio-player input[type="file"]
 {
-  display: none;
+  margin-bottom: 2em;
 }
 
 .audio-player div
@@ -27,7 +27,7 @@ html, body
   font-size: 1.5em;
   margin-bottom: 1em;
   text-align: center;
-  width: 13em;
+  width: 15em;
 }
 
 .audio-player div::before
@@ -38,6 +38,11 @@ html, body
   height: 8em;
   -webkit-mask: url('../images/file-music.svg') no-repeat top center;
   mask: url('../images/file-music.svg') no-repeat top center;
-  -webkit-mask-size: 50% auto;
+  -webkit-mask-size: 45% auto;
   mask-size: 100% auto;
+}
+
+.audio-player.state-active div::before, .audio-player.state-playing div::before
+{
+  background: #336699;
 }

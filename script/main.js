@@ -8,6 +8,12 @@
     RightArrow: 39
   };
 
+  var State = {
+    Default: 0,
+    Active: 1,
+    Playing: 2
+  };
+
   function AudioPlayer(playerElem) {
     this.playerElem = playerElem;
     this.fileInputElem = null;
@@ -18,9 +24,10 @@
 
     var self = this;
 
+    this.currentTrackTitle = 'N/A';
+
     // Status Message
     this.statusMessageElem = document.createElement('div');
-    this.statusMessageElem.innerHTML = defaultStatusMessage;
     this.playerElem.appendChild(this.statusMessageElem);
 
     // File Input
@@ -42,6 +49,8 @@
     this.playerElem.addEventListener('dragleave', function() { self.onDragLeave.apply(self, arguments); }, false);
     this.playerElem.addEventListener('dragover', function() { self.onDragOver.apply(self, arguments); }, false);
     this.playerElem.addEventListener('drop', function() { self.onDrop.apply(self, arguments); }, false);
+
+    this.setState(State.Default);
 
   }
 
@@ -88,6 +97,8 @@
     dragEvent.stopPropagation();
     dragEvent.preventDefault();
 
+    this.setState(State.Active);
+
   }
 
   AudioPlayer.prototype.onDragLeave = function(dragEvent) {
@@ -95,7 +106,7 @@
     dragEvent.stopPropagation();
     dragEvent.preventDefault();
 
-    this.statusMessageElem.innerHTML = defaultStatusMessage;
+    this.setState(State.Default);
 
   }
 
@@ -113,9 +124,6 @@
     dropEvent.stopPropagation();
     dropEvent.preventDefault();
 
-    // Update status message text
-    this.statusMessageElem.innerHTML = defaultStatusMessage;
-
     // Load the file
     this.loadFile(dropEvent.dataTransfer.files[0]);
 
@@ -123,6 +131,7 @@
 
   AudioPlayer.prototype.loadFile = function(file) {
 
+    var self = this;
     var audioElem = this.audioElem;
 
     if(file)
@@ -131,6 +140,9 @@
 
       reader.onload = function(fileLoadEvent)
       {
+          self.currentTrackTitle = file.name;
+          self.setState(State.Playing);
+
           var dataUrl = fileLoadEvent.currentTarget.result;
           audioElem.setAttribute('src', dataUrl);
           audioElem.focus();
@@ -138,6 +150,30 @@
       }
 
       reader.readAsDataURL(file);
+    }
+
+  }
+
+  AudioPlayer.prototype.setState = function(state) {
+
+    // State: Default
+    if(state === State.Default)
+    {
+      this.statusMessageElem.innerHTML = defaultStatusMessage;
+      this.playerElem.className = 'audio-player state-default';
+    }
+
+    // State: Active
+    if(state === State.Active)
+    {
+      this.playerElem.className = 'audio-player state-active';
+    }
+
+    // State: Playing
+    if(state === State.Playing)
+    {
+      this.statusMessageElem.innerHTML = '<strong>Playing:</strong> ' + this.currentTrackTitle;
+      this.playerElem.className = 'audio-player state-playing';
     }
 
   }
