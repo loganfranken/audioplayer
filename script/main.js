@@ -39,6 +39,7 @@
     // Audio Player
     this.audioElem = document.createElement('audio');
     this.audioElem.setAttribute('controls', '');
+    this.audioElem.addEventListener('timeupdate', function() { self.onAudioTimeUpdate.apply(self, arguments); }, false);
     this.playerElem.appendChild(this.audioElem);
 
     // Keyboard Controls
@@ -51,6 +52,14 @@
     this.playerElem.addEventListener('drop', function() { self.onDrop.apply(self, arguments); }, false);
 
     this.setState(State.Default);
+
+    // Play cached track (if available)
+    var cachedTrack = this.getCachedTrack();
+
+    if(cachedTrack)
+    {
+      this.startTrack(cachedTrack.trackName, cachedTrack.trackData, cachedTrack.trackTime);
+    }
 
   }
 
@@ -129,10 +138,16 @@
 
   }
 
+  AudioPlayer.prototype.onAudioTimeUpdate = function(timeEvent) {
+
+    var currTime = timeEvent.target.currentTime;
+    this.cacheCurrentTrackTime(currTime);
+
+  }
+
   AudioPlayer.prototype.loadFile = function(file) {
 
     var self = this;
-    var audioElem = this.audioElem;
 
     if(file)
     {
@@ -140,18 +155,28 @@
 
       reader.onload = function(fileLoadEvent)
       {
-          self.currentTrackTitle = file.name;
-          self.setState(State.Playing);
-
-          var dataUrl = fileLoadEvent.currentTarget.result;
-          audioElem.setAttribute('src', dataUrl);
-          audioElem.focus();
-          audioElem.play();
+        self.startTrack.apply(self, [file.name, fileLoadEvent.currentTarget.result, 0]);
       }
 
       reader.readAsDataURL(file);
     }
 
+  }
+
+  AudioPlayer.prototype.startTrack = function(trackName, trackData, trackTime)
+  {
+    // Update UI state
+    this.currentTrackTitle = trackName;
+    this.setState(State.Playing);
+
+    // Play track
+    this.audioElem.setAttribute('src', trackData);
+    this.audioElem.currentTime = trackTime;
+    this.audioElem.focus();
+    this.audioElem.play();
+
+    // Cache track
+    this.cacheTrack(trackName, trackData);
   }
 
   AudioPlayer.prototype.setState = function(state) {
@@ -174,6 +199,57 @@
     {
       this.statusMessageElem.innerHTML = '<strong>Playing:</strong> ' + this.currentTrackTitle;
       this.playerElem.className = 'audio-player state-playing';
+    }
+
+  }
+
+  AudioPlayer.prototype.getCachedTrack = function() {
+
+    var trackName = localStorage.getItem('trackName');
+    var trackData = localStorage.getItem('trackData');
+    var trackTime = localStorage.getItem('trackTime');
+
+    if(!trackName || !trackData)
+    {
+      return null;
+    }
+
+    if(!trackTime)
+    {
+      trackTime = 0;
+    }
+
+    return {
+      trackName: trackName,
+      trackData: trackData,
+      trackTime: trackTime
+    };
+
+  }
+
+  AudioPlayer.prototype.cacheTrack = function(trackName, trackData) {
+
+    try
+    {
+      localStorage.setItem('trackName', trackName);
+      localStorage.setItem('trackData', trackData);
+    }
+    catch (e)
+    {
+      // If caching fails (usually due to track size), swallow the error
+    }
+
+  }
+
+  AudioPlayer.prototype.cacheCurrentTrackTime = function(trackTime) {
+
+    try
+    {
+      localStorage.setItem('trackTime', trackTime);
+    }
+    catch (e)
+    {
+      // If caching fails (usually due to track size), swallow the error
     }
 
   }
