@@ -17,7 +17,6 @@ Features include:
 
 * Track navigation via left/right arrow keys
 * Track stop/start with spacebar
-* If track file size is small enough, track is cached when you reopen the application
 
 ## License
 
